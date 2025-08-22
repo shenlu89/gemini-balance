@@ -56,6 +56,15 @@ export function ErrorLogsTable({ logs, onRefresh, onDeleteLog }: ErrorLogsTableP
     }
   }
 
+  const copyKey = async (key: string) => {
+    try {
+      await navigator.clipboard.writeText(key)
+      showToast('API密钥已复制到剪贴板', 'success')
+    } catch {
+      showToast('复制失败', 'error')
+    }
+  }
+
   const deleteSelectedLogs = async () => {
     try {
       await Promise.all(selectedLogs.map(id => onDeleteLog(id)))
