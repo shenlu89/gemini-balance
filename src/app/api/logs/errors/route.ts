@@ -35,7 +35,9 @@ export async function GET(request: NextRequest) {
       conditions.push(lte(errorLogs.requestTime, new Date(endDate)))
     }
     
-    query = query.where(conditions.length > 0 ? and(...conditions) : undefined)
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions))
+    }
     
     const logs = await query
       .orderBy(desc(errorLogs.requestTime))
