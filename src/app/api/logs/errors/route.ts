@@ -17,38 +17,35 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
     
-    let whereClause = sql`true`
-    const conditions = []
+    const filters = []
     
     if (keySearch) {
-      conditions.push(like(errorLogs.geminiKey, `%${keySearch}%`))
+      filters.push(like(errorLogs.geminiKey, `%${keySearch}%`))
     }
     
     if (errorSearch) {
-      conditions.push(like(errorLogs.errorType, `%${errorSearch}%`))
+      filters.push(like(errorLogs.errorType, `%${errorSearch}%`))
     }
     
     if (errorCodeSearch) {
       const code = parseInt(errorCodeSearch)
       if (!isNaN(code)) {
-        conditions.push(eq(errorLogs.errorCode, code))
+        filters.push(eq(errorLogs.errorCode, code))
       }
     }
     
     if (startDate) {
-      conditions.push(gte(errorLogs.requestTime, new Date(startDate)))
+      filters.push(gte(errorLogs.requestTime, new Date(startDate)))
     }
     
     if (endDate) {
-      conditions.push(lte(errorLogs.requestTime, new Date(endDate)))
+      filters.push(lte(errorLogs.requestTime, new Date(endDate)))
     }
     
-    if (conditions.length > 0) {
-      whereClause = and(whereClause, ...conditions)
-    }
+    const finalWhereClause = filters.length > 0 ? and(...filters) : undefined
     
     const logs = await db.select().from(errorLogs)
-      .where(whereClause)
+      .where(finalWhereClause)
       .orderBy(desc(errorLogs.requestTime))
       .limit(limit)
       .offset(offset)
