@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { errorLogs } from '@/lib/db/schema'
-import { desc, and, like, gte, lte, eq } from 'drizzle-orm'
+import { desc, and, like, gte, lte, eq, sql } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
     
-    let query = db.select().from(errorLogs)
+    let whereClause = sql`true`
     const conditions = []
     
     if (keySearch) {
@@ -44,10 +44,11 @@ export async function GET(request: NextRequest) {
     }
     
     if (conditions.length > 0) {
-      query = query.where(and(...conditions))
+      whereClause = and(whereClause, ...conditions)
     }
     
-    const logs = await query
+    const logs = await db.select().from(errorLogs)
+      .where(whereClause)
       .orderBy(desc(errorLogs.requestTime))
       .limit(limit)
       .offset(offset)
