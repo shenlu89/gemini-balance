@@ -20,6 +20,7 @@ interface GeminiRequest {
 export async function POST(request: NextRequest) {
   const startTime = Date.now()
   let apiKey: string | null = null
+  let body: any = null
   let success = false
   let statusCode = 200
 
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const body = await request.json()
+    body = await request.json()
     const { messages, model, stream = false, ...otherParams } = body
 
     // Get a valid Gemini API key
