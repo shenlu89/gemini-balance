@@ -7,24 +7,8 @@ export default function HomePage() {
   const router = useRouter()
   
   useEffect(() => {
-    // Check if user is authenticated by checking for auth cookie
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/api/auth/check', {
-          credentials: 'include'
-        })
-        
-        if (response.ok) {
-          router.push('/dashboard')
-        } else {
-          router.push('/login')
-        }
-      } catch {
-        router.push('/login')
-      }
-    }
-    
-    checkAuth()
+    // Simple redirect to login page
+    router.push('/login')
   }, [router])
   
   return (
