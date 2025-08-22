@@ -18,9 +18,9 @@ export async function GET() {
     for (const setting of dbSettings) {
       if (setting.value) {
         try {
-          currentConfig[setting.key as keyof typeof config] = JSON.parse(setting.value)
+          (currentConfig as any)[setting.key] = JSON.parse(setting.value)
         } catch {
-          currentConfig[setting.key as keyof typeof config] = setting.value as any
+          (currentConfig as any)[setting.key] = setting.value
         }
       }
     }
