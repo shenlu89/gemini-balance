@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { errorLogs } from '@/lib/db/schema'
-import { desc, and, like, gte, lte } from 'drizzle-orm'
+import { desc, and, like, gte, lte, eq } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0')
     const keySearch = searchParams.get('keySearch')
     const errorSearch = searchParams.get('errorSearch')
+    const errorCodeSearch = searchParams.get('errorCodeSearch')
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
     
@@ -25,6 +26,13 @@ export async function GET(request: NextRequest) {
     
     if (errorSearch) {
       conditions.push(like(errorLogs.errorType, `%${errorSearch}%`))
+    }
+    
+    if (errorCodeSearch) {
+      const code = parseInt(errorCodeSearch)
+      if (!isNaN(code)) {
+        conditions.push(eq(errorLogs.errorCode, code))
+      }
     }
     
     if (startDate) {
