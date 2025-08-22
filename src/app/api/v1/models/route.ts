@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     // Convert to OpenAI format
     const openaiModels = {
       object: 'list',
-      data: [],
+      data: [] as any[],
     }
 
     if (data.models) {
