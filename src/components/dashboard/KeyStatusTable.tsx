@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
-import { redactKey, getStatusColor } from '@/lib/utils'
+import { redactKey, getStatusColor, cn } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
 import { IoCopy, IoRefresh, IoTrash } from 'react-icons/io5'
 
