@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
     
-    let query = db.select(errorLogs).from(errorLogs)
+    let query = db.select().from(errorLogs)
     const conditions = []
     
     if (keySearch) {
