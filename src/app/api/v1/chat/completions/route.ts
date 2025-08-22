@@ -3,6 +3,20 @@ import { config } from '@/lib/config'
 import { db } from '@/lib/db'
 import { requestLogs, errorLogs } from '@/lib/db/schema'
 
+interface GeminiRequest {
+  contents: any[]
+  generationConfig: {
+    temperature?: number
+    maxOutputTokens?: number
+    topP?: number
+    topK?: number
+  }
+  systemInstruction?: {
+    role: string
+    parts: { text: string }[]
+  }
+}
+
 export async function POST(request: NextRequest) {
   const startTime = Date.now()
   let apiKey: string | null = null
@@ -49,7 +63,7 @@ export async function POST(request: NextRequest) {
     }))
 
     // Build Gemini request
-    const geminiRequest = {
+    const geminiRequest: GeminiRequest = {
       contents: geminiMessages.filter((msg: any) => msg.role !== 'system'),
       generationConfig: {
         temperature: otherParams.temperature,
